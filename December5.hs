@@ -10,7 +10,7 @@ vowels xs = 3 <= length (filter isVowel xs)
   where isVowel x = x `elem` "aeiou"
 
 dups :: String -> Bool
-dups = forSomeCharPairs previous
+dups = conditionForCharPairs previous Or
   where
     previous Nothing Nothing = False
     previous (Just _) Nothing = False
@@ -18,7 +18,7 @@ dups = forSomeCharPairs previous
     previous _ _ = False
 
 notContains :: String -> Bool
-notContains = forEveryCharPair check
+notContains = conditionForCharPairs check And
   where
     check Nothing Nothing = True
     check (Just _) Nothing = True

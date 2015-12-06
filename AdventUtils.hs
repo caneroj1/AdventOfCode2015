@@ -1,12 +1,14 @@
 module AdventUtils
     (
-      openInputAndExecute ,
-      forEveryCharPair    ,
-      forSomeCharPairs
+      openInputAndExecute      ,
+      conditionForCharPairs    ,
+      Cond(..)
     ) where
 
 import           System.Environment
 import           System.IO
+
+data Cond = And | Or deriving (Eq)
 
 openInputAndExecute :: (String -> IO ()) -> IO ()
 openInputAndExecute fn = do
@@ -16,14 +18,12 @@ openInputAndExecute fn = do
     contents <- hGetContents handle
     fn contents)
 
-forEveryCharPair :: (Maybe Char -> Maybe Char -> Bool) -> String -> Bool
-forEveryCharPair fn [] = fn Nothing Nothing
-forEveryCharPair fn [x] = fn (Just x) Nothing
-forEveryCharPair fn (x:xs) = fn (Just x) (Just nextChar) && forEveryCharPair fn xs
+conditionForCharPairs :: (Maybe Char -> Maybe Char -> Bool) -> Cond -> String -> Bool
+conditionForCharPairs fn _ [] = fn Nothing Nothing
+conditionForCharPairs fn _ [x] = fn (Just x) Nothing
+conditionForCharPairs fn cond (x:xs)
+  | cond == And = first && second
+  | otherwise = first || second
   where nextChar = head xs
-
-forSomeCharPairs :: (Maybe Char -> Maybe Char -> Bool) -> String -> Bool
-forSomeCharPairs fn [] = fn Nothing Nothing
-forSomeCharPairs fn [x] = fn (Just x) Nothing
-forSomeCharPairs fn (x:xs) = fn (Just x) (Just nextChar) || forSomeCharPairs fn xs
-  where nextChar = head xs
+        first = fn (Just x) (Just nextChar)
+        second = conditionForCharPairs fn cond xs
