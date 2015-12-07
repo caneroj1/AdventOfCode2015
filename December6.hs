@@ -9,9 +9,9 @@ main = openInputAndExecute (\contents -> do
   print $ foldl' (+) 0 $ map snd list)
 
 applyInstruction :: LightMap -> Instruction -> LightMap
-applyInstruction mp (Off     rect ) = foldl (\m idx -> setMap m idx (-1)) mp $ indexes rect
-applyInstruction mp (On      rect ) = foldl (\m idx -> setMap m idx 1) mp $ indexes rect
-applyInstruction mp (Toggle  rect ) = foldl (\m idx -> setMap m idx 2) mp $ indexes rect
+applyInstruction mp (Off     rect ) = foldl' (\m idx -> setMap m idx (-1)) mp $ indexes rect
+applyInstruction mp (On      rect ) = foldl' (\m idx -> setMap m idx 1) mp $ indexes rect
+applyInstruction mp (Toggle  rect ) = foldl' (\m idx -> setMap m idx 2) mp $ indexes rect
 
 -- we have a 1000x1000 grid. 0-999, 0-999
 indexes :: Rectangle -> [Int]
