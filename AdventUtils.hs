@@ -4,11 +4,13 @@ module AdventUtils
       conditionForCharPairs        ,
       getCharPairsAndStartPositions,
       instruction                  ,
+      clength                      ,
+      foldl'                       ,
       Cond(..)                     ,
       Instruction(..)              ,
       PairMap                      ,
       Rectangle                    ,
-      LightGrid                    ,
+      LightMap
     ) where
 
 import qualified Data.List.Split    as Split
@@ -29,8 +31,8 @@ type PairMap = Map.Map String StartPositions
 -- December6
 type CoordinatePair = (Int, Int)
 type Rectangle = (CoordinatePair, CoordinatePair)
-data Instruction = Toggle Rectangle | Off Rectangle | On Rectangle deriving (Show)
-type LightGrid = Map.Map Rectangle Bool
+data Instruction = Toggle Rectangle | Off Rectangle | On Rectangle deriving (Show, Eq)
+type LightMap = Map.Map Int Int
 
 openInputAndExecute :: (String -> IO ()) -> IO ()
 openInputAndExecute fn = do
@@ -87,3 +89,13 @@ coord xs = (read x :: Int, read y :: Int)
   where nums = Split.splitOn "," xs
         x = head nums
         y = last nums
+
+clength :: [a] -> Int
+clength xs = length' xs 0
+  where length' []     n = n
+        length' (_:ys) n = length' ys $! (n + 1)
+
+foldl' :: (b -> a -> b) -> b -> [a] -> b
+foldl' _ z []     = z
+foldl' f z (x:xs) = let z' = z `f` x
+                    in seq z' $ foldl' f z' xs
