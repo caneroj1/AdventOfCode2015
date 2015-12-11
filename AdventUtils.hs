@@ -6,6 +6,7 @@ module AdventUtils
       instruction                  ,
       clength                      ,
       foldl'                       ,
+      isNumeric                    ,
       Cond(..)                     ,
       Instruction(..)              ,
       PairMap                      ,
@@ -13,6 +14,7 @@ module AdventUtils
       LightMap
     ) where
 
+import qualified Data.Char          as Char
 import qualified Data.List.Split    as Split
 import qualified Data.Map.Strict    as Map
 import           Data.Maybe
@@ -99,3 +101,8 @@ foldl' :: (b -> a -> b) -> b -> [a] -> b
 foldl' _ z []     = z
 foldl' f z (x:xs) = let z' = z `f` x
                     in seq z' $ foldl' f z' xs
+
+isNumeric :: String -> Bool
+isNumeric [] = False
+isNumeric [x] = Char.isNumber x
+isNumeric (x:xs) = Char.isNumber x && isNumeric xs
