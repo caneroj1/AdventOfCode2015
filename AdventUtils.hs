@@ -1,22 +1,24 @@
 module AdventUtils
     (
-      openInputAndExecute          ,
-      conditionForCharPairs        ,
-      getCharPairsAndStartPositions,
-      instruction                  ,
-      clength                      ,
-      foldl'                       ,
-      isNumeric                    ,
-      Cond(..)                     ,
-      Instruction(..)              ,
-      PairMap                      ,
-      Rectangle                    ,
+      openInputAndExecute           ,
+      conditionForCharPairs         ,
+      getCharPairsAndStartPositions ,
+      openInputAndExecuteByteStrings,
+      instruction                   ,
+      clength                       ,
+      foldl'                        ,
+      isNumeric                     ,
+      Cond(..)                      ,
+      Instruction(..)               ,
+      PairMap                       ,
+      Rectangle                     ,
       LightMap
     ) where
 
-import qualified Data.Char          as Char
-import qualified Data.List.Split    as Split
-import qualified Data.Map.Strict    as Map
+import qualified Data.ByteString.Char8 as BS
+import qualified Data.Char             as Char
+import qualified Data.List.Split       as Split
+import qualified Data.Map.Strict       as Map
 import           Data.Maybe
 import           System.Environment
 import           System.IO
@@ -42,6 +44,14 @@ openInputAndExecute fn = do
   let filePath = head args
   withFile filePath ReadMode (\handle -> do
     contents <- hGetContents handle
+    fn contents)
+
+openInputAndExecuteByteStrings :: (BS.ByteString -> IO ()) -> IO ()
+openInputAndExecuteByteStrings fn = do
+  args <- getArgs
+  let filePath = head args
+  withFile filePath ReadMode (\handle -> do
+    contents <- BS.hGetContents handle
     fn contents)
 
 conditionForCharPairs :: (Maybe Char -> Maybe Char -> Bool) -> Cond -> String -> Bool
