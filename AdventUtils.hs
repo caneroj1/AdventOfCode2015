@@ -8,6 +8,8 @@ module AdventUtils
       clength                       ,
       foldl'                        ,
       isNumeric                     ,
+      uniq                          ,
+      makeCircular                  ,
       Cond(..)                      ,
       Instruction(..)               ,
       PairMap                       ,
@@ -116,3 +118,13 @@ isNumeric :: String -> Bool
 isNumeric [] = False
 isNumeric [x] = Char.isNumber x || x == '-'
 isNumeric (x:xs) = (Char.isNumber x || x == '-') && isNumeric xs
+
+uniq :: (Eq a) => [a] -> [a]
+uniq [] = []
+uniq [x] = [x]
+uniq (x:xs) = if x == head xs then uniq xs else x : uniq xs
+
+makeCircular :: [a] -> [a]
+makeCircular xs = circle xs
+  where l = clength xs
+        circle = take (l+2) . drop (l-1) . take (l*3) . cycle
