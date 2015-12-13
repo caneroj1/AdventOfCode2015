@@ -114,5 +114,5 @@ foldl' f z (x:xs) = let z' = z `f` x
 
 isNumeric :: String -> Bool
 isNumeric [] = False
-isNumeric [x] = Char.isNumber x
-isNumeric (x:xs) = Char.isNumber x && isNumeric xs
+isNumeric [x] = Char.isNumber x || x == '-'
+isNumeric (x:xs) = (Char.isNumber x || x == '-') && isNumeric xs
