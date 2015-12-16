@@ -10,8 +10,10 @@ module AdventUtils
       isNumeric                     ,
       uniq                          ,
       makeCircular                  ,
+      makeReindeer                  ,
       Cond(..)                      ,
       Instruction(..)               ,
+      Reindeer(..)                  ,
       PairMap                       ,
       Rectangle                     ,
       LightMap
@@ -39,6 +41,21 @@ type CoordinatePair = (Int, Int)
 type Rectangle = (CoordinatePair, CoordinatePair)
 data Instruction = Toggle Rectangle | Off Rectangle | On Rectangle deriving (Show, Eq)
 type LightMap = Map.Map Int Int
+
+-- December14
+data Reindeer = Reindeer String Int Int Int Int Int Int Int | Finished String Int
+
+instance Eq Reindeer where
+  (Finished xs x) == (Finished ys y) = xs == ys && x == y
+  (Reindeer _ _ _ _ pX _ _ _) == (Reindeer _ _ _ _ pY _ _ _) = pX == pY
+
+instance Ord Reindeer where
+  (Finished _ x) <= (Finished _ y) = x <= y
+  (Reindeer _ _ _ _ pX _ _ _) <= (Reindeer _ _ _ _ pY _ _ _) = pX <= pY
+
+instance Show Reindeer where
+  show (Finished name x) = name ++ " finished after " ++ show x ++ " km."
+  show (Reindeer name _ _ _ points _ _ _) = name ++ " finished with " ++ show points ++ " points."
 
 openInputAndExecute :: (String -> IO ()) -> IO ()
 openInputAndExecute fn = do
@@ -128,3 +145,11 @@ makeCircular :: [a] -> [a]
 makeCircular xs = circle xs
   where l = clength xs
         circle = take (l+2) . drop (l-1) . take (l*3) . cycle
+
+makeReindeer :: String -> Reindeer
+makeReindeer xs = Reindeer name speed time rest 0 0 time rest
+  where tokens = Split.splitOn " " xs
+        name = head tokens
+        speed = read (tokens !! 3) :: Int
+        time = read (tokens !! 6) :: Int
+        rest = read (tokens !! 13) :: Int
