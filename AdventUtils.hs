@@ -104,7 +104,6 @@ instruction xs
   where tokens = Split.splitOn " " xs
 instruction _ = Off ((0,0), (0,0))
 
-
 makeInstruction :: [String] -> Instruction
 makeInstruction tokens
   | first == "on" = On rect
